@@ -151,10 +151,16 @@ def test_handle_order_created(
     assert b'9' == product_two[b'in_stock']
     assert b'12' == product_three[b'in_stock']
 
-def test_delete_product(create_product, service_container):
+def test_delete_product(create_product, redis_client, service_container):
 
     created_product = create_product()
     with entrypoint_hook(service_container, 'delete') as delete:
-        reply = delete(created_product['id'])
+        delete(created_product['id'])
 
-    assert reply > 0
+    assert redis_client.hlen('products:LZ127') == 0
+
+def test_delete_product_fails_on_not_found(service_container):
+
+    with pytest.raises(NotFound):
+        with entrypoint_hook(service_container, 'delete') as delete:
+            delete(111)
