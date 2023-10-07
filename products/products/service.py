@@ -38,4 +38,4 @@ class ProductsService:
             
     @rpc
     def delete(self, product_id):
-        self.storage.delete(product_id)
+        return self.storage.delete(product_id)

@@ -62,3 +62,9 @@ def test_decrement_stock(storage, create_product, redis_client):
     assert b'10' == product_one[b'in_stock']
     assert b'7' == product_two[b'in_stock']
     assert b'12' == product_three[b'in_stock']
+
+def test_delete(create_product, storage):
+
+    created_product = create_product(id=1, title='LZ 127', in_stock=10)
+    reply = storage.delete(created_product['id'])
+    assert reply > 0

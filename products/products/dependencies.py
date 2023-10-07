@@ -60,9 +60,14 @@ class StorageWrapper:
     def delete(self, product_id):
         product = self.get(product_id)
         
-        self.client.hdel(
+        reply = self.client.hdel(
             self._format_key(product_id),
             *product.keys())
+        
+        if reply == 0:
+            raise NotFound('Product ID {} does not exist'.format(product_id))
+        else:
+            return reply
 
 
 class Storage(DependencyProvider):
