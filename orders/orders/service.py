@@ -64,6 +64,10 @@ class OrdersService:
     @rpc
     def delete_order(self, order_id):
         order = self.db.query(Order).get(order_id)
+        # raises IntegrityError on delete(order) if not implemented, 
+        # as order_id is one of order_details FKs 
+        for order_details in order.order_details:
+            self.db.delete(order_details)
         self.db.delete(order)
         self.db.commit()
 
